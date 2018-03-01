@@ -156,19 +156,19 @@ aside ul {list-style-type: none; margin-left: 0; padding-left: 0; margin-bottom:
 .track {border-style: solid;
 	border-collapse: separate;
 	display: table;
-border-width: 16px;
--moz-border-image: url(outer.png) 14 15 14 16 repeat;
--webkit-border-image: url(images/outer.png) 14 15 14 16 repeat;
--o-border-image: url(outer.png) 14 15 14 16 repeat;
-border-image: url(images/outer.png) 14 15 14 16 repeat; background-image: url(images/mud.png);
- position: absolute; height: 80vh; width: 80vw; margin: 5vw; margin-top: 5vh;
+	border-width: 16px;
+	-moz-border-image: url(outer.png) 14 15 14 16 repeat;
+	-webkit-border-image: url(images/outer.png) 14 15 14 16 repeat;
+	-o-border-image: url(outer.png) 14 15 14 16 repeat;
+	border-image: url(images/outer.png) 14 15 14 16 repeat; background-image: url(images/mud.png);
+	position: absolute; height: 80vh; width: 80vw; margin: 5vw; margin-top: 5vh;
 }
 
 
 .track .inner {
 background-image: url(images/bg.png);
 border-image: url(images/inner.png); border-image-slice: 16 16 16 16 fill; border-image-width: 16px 16px 16px 16px; border-image-outset: 0px 0px 0px 0px; border-image-repeat: round round;
-	border-collapse: separate; margin-top: 15vh; margin-left: 10vw; display: table;  solid transparent; background-color: green; width: 60vw; height: 50vh;}
+	border-collapse: separate; margin-top: 15vh; margin-left: 10vw; display: table  solid transparent; background-color: green; width: 60vw; height: 50vh;}
 
 .horse {background-image: url(images/horse2.png);}
 .horse.runLeft {
