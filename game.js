@@ -20,6 +20,10 @@ turningCorner1[2] = 0.015;
 turningCorner1[3] = 0.00;
 
 
+for (var i=0; i<5;i++){
+    
+}
+
 
 
 //horses movement
@@ -34,7 +38,7 @@ function moveRight() {
 
 
     for (var i = 0; i < horse.length; i++) {
-        var randomSpeed = Math.floor(Math.random() * 7);
+        var randomSpeed = Math.floor(Math.random() * 15);
         positionTop = horse[i].offsetTop;
         positionLeft = horse[i].offsetLeft;
 
@@ -79,29 +83,29 @@ function moveRight() {
                 horse[i].className = "horse standRight";
 
                 //adds elements to scoreboard array it is added by sequence who reached finish position first 
-                var adding = winners(scoreBoard, i);
+                var adding = winners(scoreBoard, "horse"+(i+1));
 
                 if (adding == false) {
-                    scoreBoard.push(i)
+                    scoreBoard.push("horse"+(i+1));
 
                     //stops timer and function if array length is equals to 4
                     if (scoreBoard.length == 4) {
 
                         clearInterval(interval);
                         winnerTable();
+                        reset( );
 
                     }
                 }
             }
         }
-
     }
 }
 
 
 
 
-// check score board array for duplication
+// Checks scoreBoard array for same elements
 function winners(array, horseNumber) {
     var check = false;
     for (var i = 0; i < array.length; i++) {
@@ -112,20 +116,23 @@ function winners(array, horseNumber) {
     }
     return check;
 }
-// TODO
-function winnerTable() {
-
-    var element = document.getElementById("#results");
-    var winnerPosition = element.getElementsByClassName("horse");
-    for (var i = 0; i < 4; i++) {
-
-        horsepo = "horse" + (scoreBoard[i] + 1);
-        console.log(winnerPosition);
-        winnerPosition[i].className = horsepo[i];
+// Updates winner table according to horse finish position
+function winnerTable() {    
+    for (var i = 0; i < scoreBoard.length; i++) {
+        var winnerPosition = document.getElementById((i+1));             
+        winnerPosition.className = scoreBoard[i];
     }
-
 }
 
+
+//needs work to reset everything
+function reset(){
+    var startButton = document.querySelector('#start');
+    startButton.addEventListener('click', start);
+    startButton.style.color = "White";
+    startButton.style.cursor = "pointer";
+    
+}
 
 
 
@@ -133,12 +140,7 @@ function winnerTable() {
 
 function start() {
     interval = setInterval(moveRight, 10);
-
-
 }
-
-
-
 
 
 function myLoadEvent() {
