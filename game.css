@@ -428,6 +428,10 @@ opacity: 0.7;
 #start:hover {
 	color: #000;
 }
+#start.disabled:hover{
+	color : white;
+	
+}
 
 #bet, #results {
 	background-color: #ffefb4;

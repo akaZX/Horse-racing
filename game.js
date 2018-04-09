@@ -3,7 +3,6 @@
 //global text area variables
 var lapsElement; 
 var amountElement;
-var finish;
 var laps;
 var checkLaps = false;
 //global variables required for betting
@@ -27,21 +26,26 @@ turningCorner1[1] = 0.06;
 turningCorner1[2] = 0.04;
 turningCorner1[3] = 0.02;
 
+//array for horse names
+
+var horseName = ["White", "Blue", "Green", "Brown"];
+// horseName[0] ="White";
+// horseName[1]="Blue";
+// horseName[2]="Green";
+// horseName[3]="Brown";
+
 //sets incrementing speed for race start
-function startSpeed(){
-    console.log(speed);
+function startSpeed(){    
     for(var i =0; i<4; i++){
         if(speed[i]==4){
             speed[i] = 4; 
             continue;           
         }        
-          speed[i] = speed[i]+1;
-          
+          speed[i] = speed[i]+1;          
     }
-    if (speed[3]==4){  
-        console.log("ijungia random");
+    if (speed[3]==4){         
         clearInterval(speedInterval);          
-        randomSpeed = setInterval(speedRandomiser, 250)
+        randomSpeed = setInterval(speedRandomiser, 250);
     }
    
 }
@@ -52,7 +56,7 @@ function speedRandomiser(){
         speed = [];
     }
     for(var i=0; i<4;i++){
-    speed.push((Math.ceil(Math.random()*4))+3) ;
+    speed.push((Math.ceil(Math.random()*3))+3) ;
     }
 }
 //horses movement
@@ -62,21 +66,20 @@ function move() {
     var startButton = document.querySelector('#start');
     startButton.removeEventListener('click', start);        
     startButton.style.cursor = "not-allowed";
-
+    startButton.className = "disabled";
+    //sets finish position for horses
     let finishLine = document.querySelector('#startline');
-    finish = finishLine.offsetLeft + 140;
-
+    var finish = finishLine.offsetLeft + 140;
+    //targets all horse elements 
     var horse = document.getElementsByClassName('horse');
     for (var i = 0; i < horse.length; i++) {
-        
+        //tracks horse position in x and y axis
         var positionTop = horse[i].offsetTop;
-        var positionLeft = horse[i].offsetLeft;       
-        
+        var positionLeft = horse[i].offsetLeft;              
         //moves horses right
         if (positionTop > window.innerHeight * (0.75 - turningCorner1[i]) && positionLeft < window.innerWidth * (0.72 + turningCorner1[i]) && positionLeft > window.innerWidth * 0.05) {
             horse[i].className = "horse runRight";
-            horse[i].style.left = positionLeft + speed[i] + 'px';
-            
+            horse[i].style.left = positionLeft + speed[i] + 'px';            
         }
         //moves horses up          
         else if (positionTop > window.innerHeight * (0.07 + turningCorner1[3 - i]) && positionLeft >= window.innerWidth * (0.72 + turningCorner1[i])) {
@@ -87,14 +90,12 @@ function move() {
         //moves horses left
         if (positionTop < window.innerHeight * (0.07 + turningCorner1[3 - i]) && positionLeft >= window.innerWidth * (0.12 - turningCorner1[3 - i])) {
             horse[i].className = "horse runLeft";
-            horse[i].style.left = positionLeft - speed[i] + 'px';
-            
+            horse[i].style.left = positionLeft - speed[i] + 'px';            
         }
         //moves horse down   
         else if (positionLeft <= window.innerWidth * (0.14 - turningCorner1[3 - i]) && positionTop < window.innerHeight * (0.80 - turningCorner1[i])) {
             horse[i].className = "horse runDown";
-            horse[i].style.top = positionTop + speed[i] + 'px';           
-
+            horse[i].style.top = positionTop + speed[i] + 'px';  
                 //checks laps when horse goes down;
                 if(checkLaps === true){ 
                     laps = laps-1;                   
@@ -111,36 +112,26 @@ function move() {
             horse[i].className = "horse runRight";
             horse[i].style.left = positionLeft + speed[i] + 'px';
 
-            // finds start line and sets finish position
-            let finishLine = document.querySelector('#startline');
-            finish = finishLine.offsetLeft + 140;
-
             //checks horse position according to set finish position
             if (positionLeft >= finish) {
-                horse[i].style.left = finish + 'px';
-                //horse[i].style.left = positionLeft + 0 + 'px';
+                horse[i].style.left = finish + 'px';                
                 horse[i].className = "horse standRight";
-
                 //adds elements to scoreboard array it is added by sequence who reached finish position first 
                 var adding = winners(scoreBoard, "horse" + (i + 1));
 
                 if (adding === false) {
-                    scoreBoard.push("horse" + (i + 1));
-                    
+                    scoreBoard.push("horse" + (i + 1));                    
                 }   
             }  
         }  
     }   
-
     //stops timer and function when array has four elements in it    
-    if (scoreBoard.length == horse.length) {
-        
-        
+    if (scoreBoard.length == horse.length) {        
         clearInterval(interval);
         clearInterval(randomSpeed);
         winnerTable();                     
-}   }
-
+    }   
+}
 // Checks scoreBoard array for same elements
 function winners(array, horseNumber) {
     var check = false;
@@ -151,7 +142,6 @@ function winners(array, horseNumber) {
     }
     return check;
 }
-
 // Updates winner table according to horse finish position
 function winnerTable() {
     for (var i = 0; i < scoreBoard.length; i++) {
@@ -160,7 +150,6 @@ function winnerTable() {
     }         
     betResults();    
 }
-
 //generates odds for winner horse and loosers
 //works in a way to half down odds for winner and takes 2 out from second place
 function odds(){
@@ -182,32 +171,30 @@ function odds(){
         }
     }
 }
-
 // adds betting results
 function betResults(){
-
     if(selection == scoreBoard[0]){
-        let number = scoreBoard[0].charAt(5);
-        console.log(number); 
+        let number = scoreBoard[0].charAt(5);        
         let wonAmount = bet * odd[number-1];
         alert("You just won: "+ wonAmount);
         funds = funds + wonAmount; 
     }
-    alert("Your selected horse lost");   
+    else{
+    alert("Your selected horse lost"); 
+     } 
     document.getElementById("funds").innerHTML = funds;
     odds();
     restart();
 }
 
-
 function restart(){
-    var startButton = document.querySelector('#start');    
+    var startButton = document.querySelector('#start'); 
+    startButton.classList.remove("disabled");   
     startButton.innerHTML = "Restart ?";    
     startButton.style.cursor = "pointer";
     startButton.addEventListener('click', resetPosition);
     //resetPosition();
 }
-
 //resets horse position to original 
 function resetPosition() {
     var startButton = document.querySelector('#start');
@@ -235,8 +222,7 @@ function resetPosition() {
     amountElement = 0;
     nearFinish = false;
     selection = 0;
-    bet = 0;
-    var startButton = document.querySelector('#start');
+    bet = 0;    
     startButton.removeEventListener('click', resetPosition);
     myLoadEvent(); 
 }
@@ -248,16 +234,16 @@ function betting(){
     amountElement = document.getElementById("amount");
     bet = amountElement.value;
     //checks betting amount against funds and funds is not negative number
-    if(bet > funds || funds == 0){
-        alert("Sell your kidney!!");
+    if(bet > funds || funds === 0){
+        alert("Sell your kidney\n if you want to play more!!");
         amountElement.value = "";
         bet = 0; 
                          
     }
-    else if(bet == 0 || bet > funds) {
-    alert("Please enter amount");
+    else if(bet === 0 || bet > funds) {
+    alert("Please enter betting amount");
     amountElement.style.backgroundColor = "Red";
-    resetPosition();
+    // resetPosition();
     } 
     else{ 
         amountElement.style.backgroundColor = "White";
@@ -266,7 +252,7 @@ function betting(){
         document.getElementById("funds").innerHTML = funds; 
         
         //Sets two intervals    
-        speedInterval = setInterval(startSpeed, 300);    
+        speedInterval = setInterval(startSpeed, 350);    
         interval = setInterval(move, 15);    
     }
 }
@@ -283,11 +269,20 @@ function start() {
     else{
         alert("Please enter valid number of laps!!! \nMaximum value is: 10 \nMinimum: 1");
         lapsElement.style.backgroundColor ="Red";
-        resetPosition();
+        // resetPosition();
     }   
 }
 
+function oddsDisplayed(){
+    let sel = document.querySelectorAll("option");
+    for(var i = 0; i < sel.length ; i++){       
+        sel[i].innerHTML = horseName[i] + "  odd is: "+ odd[i];
+    }
+}
+
 function myLoadEvent() {
+    //updates dropdown selection with odds for each horse
+    oddsDisplayed();
     //gets starting positions for each horse
     let horse = document.getElementsByClassName('horse');
     for (var i = 0; i < horse.length ; i++){
@@ -299,8 +294,6 @@ function myLoadEvent() {
     if(scoreBoard.length === 0){      
         startButton.style.cursor = "pointer";
     }
-
     startButton.addEventListener('click', start);
 }
-
 document.addEventListener('DOMContentLoaded', myLoadEvent);
