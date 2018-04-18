@@ -158,7 +158,7 @@ function odds() {
                 odd[i] = 2;
             }
         } else if (scoreBoard[1] == "horse" + (i + 1)) {
-            odd[i] = odd[i] - 1;
+            odd[i] = odd[i] - 2;
             if (odd[i] < 2) {
                 odd[i] = 2;
             }
@@ -221,25 +221,19 @@ function resetPosition() {
 }
 //checks betting sum and funds to carry on betting
 function betting() {
-    
+
     var e = document.getElementById("bethorse");
     selection = e.value;
     amountElement = document.getElementById("amount");
-    bet = amountElement.value;
-    // checks bet value if its number or a string
-    if (isNaN(bet)){        
-        alert("Please use numbers!!!") 
-        bet=0;      
-    }
-    // console.log(bet);
-    // checks betting amount against funds and funds is not negative number
-    if (bet > funds || funds === 0) {
+    bet = amountElement.value;   
+    // checks funds
+    if (funds === 0) {
         alert("Sell your kidney\n if you want to play more!!");
-      
-    } else if (bet <=0 || bet > funds) {
+    // isNaN(bet) checks bet value if its number or a string 
+    } else if (isNaN(bet) || bet <=0 || bet > funds) {
         alert("Please enter betting amount\nit can't be 0 or more than you have");
         amountElement.style.backgroundColor = "Red";
-        // resetPosition();
+        
     } else {
         amountElement.style.backgroundColor = "White";
         amountElement.disabled = true;
