@@ -143,7 +143,7 @@ function winners(array, horseNumber) {
 // Updates winner table according to horse finish position
 function winnerTable() {
     for (var i = 0; i < scoreBoard.length; i++) {
-        var winnerPosition = document.getElementById((i + 1));
+        let winnerPosition = document.getElementById((i + 1));
         winnerPosition.className = scoreBoard[i];
     }
     betResults();
