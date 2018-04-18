@@ -9,35 +9,36 @@ var checkLaps = false;
 var selection; //horse from dropdown
 var funds = 100; // funds to start with
 var bet; // betting amount
-var odd = [2, 2, 2, 2]; //starting odds
+var odd = [2, 2, 2, 2]; //starting odds, additional horses needs new entries
 //sets starting position in arrays
 const STARTLEFT = [];
 const STARTTOP = [];
-
+const HORSECOUNT = 4;
 var scoreBoard = [];
 var speed = [1, 1, 1, 1]; // pre-set starting speed
 var speedInterval = 0;
 var randomSpeed = 0;
 var interval = 0;
 var nearFinish = false;
-// array for different corner angles
+// array for different corner angles, adding more horses needs more entries
 var turningCorner1 = [];
 turningCorner1[0] = 0.08;
 turningCorner1[1] = 0.06;
 turningCorner1[2] = 0.04;
 turningCorner1[3] = 0.02;
 //array for horse names
-var horseName = ["White", "Blue", "Green", "Brown"];
+var horseName = ["White", "Blue", "Green", "Brown"]; // additional horses needs new entries
+
 //sets incrementing speed for race start
 function startSpeed() {
-    for (var i = 0; i < 4; i++) {
+    for (var i = 0; i < HORSECOUNT; i++) {
         if (speed[i] == 4) {
             speed[i] = 4;
             continue;
         }
         speed[i] = speed[i] + 1;
     }
-    if (speed[3] == 4) {
+    if (speed[HORSECOUNT-1] == 4) {
         clearInterval(speedInterval);
         randomSpeed = setInterval(speedRandomiser, 250);
     }
@@ -45,13 +46,14 @@ function startSpeed() {
 
 function speedRandomiser() {
 
-    if (speed.length == 4) {
+    if (speed.length == HORSECOUNT) {
         speed = [];
     }
-    for (var i = 0; i < 4; i++) {
+    for (var i = 0; i < HORSECOUNT; i++) {
         speed.push((Math.ceil(Math.random() * 3)) + 3);
     }
 }
+var distance = [0,0,0,0];
 //horses movement
 function move() {
     //disables start button
@@ -72,22 +74,26 @@ function move() {
         if (positionTop > window.innerHeight * (0.75 - turningCorner1[i]) && positionLeft < window.innerWidth * (0.72 + turningCorner1[i]) && positionLeft > window.innerWidth * 0.05) {
             horse[i].className = "horse runRight";
             horse[i].style.left = positionLeft + speed[i] + 'px';
+            distance[i] = distance[i] +speed[i];
         }
         //moves horses up          
-        else if (positionTop > window.innerHeight * (0.07 + turningCorner1[3 - i]) && positionLeft >= window.innerWidth * (0.72 + turningCorner1[i])) {
+        else if (positionTop > window.innerHeight * (0.07 + turningCorner1[HORSECOUNT-1 - i]) && positionLeft >= window.innerWidth * (0.72 + turningCorner1[i])) {
             horse[i].className = "horse runUp";
             horse[i].style.top = positionTop - speed[i] + 'px';
             checkLaps = true;
+            distance[i] = distance[i] +speed[i];
         }
         //moves horses left
-        if (positionTop < window.innerHeight * (0.07 + turningCorner1[3 - i]) && positionLeft >= window.innerWidth * (0.12 - turningCorner1[3 - i])) {
+        if (positionTop < window.innerHeight * (0.07 + turningCorner1[HORSECOUNT-1- i]) && positionLeft >= window.innerWidth * (0.12 - turningCorner1[HORSECOUNT-1 - i])) {
             horse[i].className = "horse runLeft";
             horse[i].style.left = positionLeft - speed[i] + 'px';
+            distance[i] = distance[i] +speed[i];
         }
         //moves horse down   
-        else if (positionLeft <= window.innerWidth * (0.14 - turningCorner1[3 - i]) && positionTop < window.innerHeight * (0.80 - turningCorner1[i])) {
+        else if (positionLeft <= window.innerWidth * (0.14 - turningCorner1[HORSECOUNT-1 - i]) && positionTop < window.innerHeight * (0.80 - turningCorner1[i])) {
             horse[i].className = "horse runDown";
             horse[i].style.top = positionTop + speed[i] + 'px';
+            distance[i] = distance[i] +speed[i];
             //checks laps when horse goes down;
             if (checkLaps === true) {
                 laps = laps - 1;
@@ -102,6 +108,7 @@ function move() {
             nearFinish = true;
             horse[i].className = "horse runRight";
             horse[i].style.left = positionLeft + speed[i] + 'px';
+            distance[i] = distance[i] +speed[i];
 
             //checks horse position according to set finish position
             if (positionLeft >= finish) {
@@ -142,9 +149,9 @@ function winnerTable() {
     betResults();
 }
 //generates odds for winner horse and loosers
-//works in a way to half down odds for winner and takes 2 out from second place
+//works in a way to half down odds for winner and takes 1 out from second place
 function odds() {
-    for (var i = 0; i < 4; i++) {
+    for (var i = 0; i < HORSECOUNT; i++) {
         if (scoreBoard[0] == "horse" + (i + 1)) {
             odd[i] = odd[i] / 2;
             if (odd[i] < 2) {
@@ -189,8 +196,8 @@ function resetPosition() {
     startButton.innerHTML = "Start Race";
     //clears arrays   
     scoreBoard = [];
-    //sets speed interval for new round
-    speed = [1, 1, 1, 1];
+    //sets speed interval for new round, if more horses added than it need additional inputs in array
+    speed = [1,1,1,1];
     // Clears text areas 
     lapsElement.disabled = false;
     lapsElement.value = " ";
@@ -199,7 +206,7 @@ function resetPosition() {
     document.getElementById("bethorse").disabled = false;
     // resets horse position to same as when the window was loaded
     var horse = document.getElementsByClassName('horse');
-    for (var i = 0; i < 4; i++) {
+    for (var i = 0; i < HORSECOUNT; i++) {
         horse[i].style.left = STARTLEFT[i] + 'px';
         horse[i].style.top = STARTTOP[i] + 'px';
         horse[i].className = "horse standRight";
@@ -212,22 +219,25 @@ function resetPosition() {
     startButton.removeEventListener('click', resetPosition);
     myLoadEvent();
 }
-
 //checks betting sum and funds to carry on betting
 function betting() {
+    
     var e = document.getElementById("bethorse");
     selection = e.value;
     amountElement = document.getElementById("amount");
     bet = amountElement.value;
-    //checks betting amount against funds and funds is not negative number
+    // checks bet value if its number or a string
+    if (isNaN(bet)){        
+        alert("Please use numbers!!!") 
+        bet=0;      
+    }
+    // console.log(bet);
+    // checks betting amount against funds and funds is not negative number
     if (bet > funds || funds === 0) {
         alert("Sell your kidney\n if you want to play more!!");
-        amountElement.value = "";
-        bet = 0;
-        resetPosition();
-
-    } else if (bet === 0 || bet > funds) {
-        alert("Please enter betting amount");
+      
+    } else if (bet <=0 || bet > funds) {
+        alert("Please enter betting amount\nit can't be 0 or more than you have");
         amountElement.style.backgroundColor = "Red";
         // resetPosition();
     } else {
@@ -238,7 +248,7 @@ function betting() {
         //Sets two intervals to start race    
         speedInterval = setInterval(startSpeed, 350);
         interval = setInterval(move, 15);
-    }
+        }
 }
 
 function start() {
@@ -269,7 +279,7 @@ function myLoadEvent() {
     oddsDisplayed();
     //gets starting positions for each horse
     let horse = document.getElementsByClassName('horse');
-    for (var i = 0; i < horse.length; i++) {
+    for (var i = 0; i < HORSECOUNT; i++) {
         STARTLEFT[i] = horse[i].offsetLeft;
         STARTTOP[i] = horse[i].offsetTop;
         horse[i].className = "horse standRight";
