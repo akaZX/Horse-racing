@@ -1,2 +1,1 @@
-# assignment2
-horse racing game
+Horse racing
